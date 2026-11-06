@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+import streamlit as st
 
 from models.steps import ExecutionStep
 
@@ -61,6 +62,8 @@ def create_array_figure(
     )
 
     return fig
+
+
 def create_bubble_sort_animation(
     steps: list[ExecutionStep]
 ) -> go.Figure:
@@ -237,3 +240,102 @@ def create_bubble_sort_animation(
     )
 
     return fig
+
+
+
+def display_array(step: ExecutionStep):
+    """
+    Display one algorithm execution step
+    as an array of visual boxes.
+    """
+
+    values = step.state
+    active_indices = step.indices
+
+    boxes = ""
+
+    for index, value in enumerate(values):
+
+        if index in active_indices:
+            box_class = "active"
+        else:
+            box_class = "normal"
+
+        boxes += f"""
+        <div class="array-item {box_class}">
+            <div class="value">{value}</div>
+            <div class="index">index {index}</div>
+        </div>
+        """
+
+    html = f"""
+    <style>
+
+        .array-container {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            padding: 35px 20px;
+            min-height: 160px;
+        }}
+
+        .array-item {{
+            width: 80px;
+            text-align: center;
+            transition:
+                transform 0.4s ease,
+                opacity 0.4s ease;
+        }}
+
+        .value {{
+            width: 80px;
+            height: 80px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border: 2px solid #555;
+            border-radius: 12px;
+
+            background-color: white;
+            color: black;
+
+            font-size: 26px;
+            font-weight: bold;
+
+            box-sizing: border-box;
+        }}
+
+        .index {{
+            margin-top: 8px;
+            font-size: 13px;
+            color: #777;
+        }}
+
+        .active {{
+            transform: translateY(-15px);
+        }}
+
+        .active .value {{
+            background-color: #ffe08a;
+            border-color: #e0a800;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.18);
+        }}
+
+    </style>
+
+    <div class="array-container">
+        {boxes}
+    </div>
+    """
+
+    st.components.v1.html(
+        html,
+        height=230
+    )
+
+
+
+
